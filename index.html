@@ -3,94 +3,143 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rol de aseo — agrega tus sábados a tu calendario</title>
+<title>Rol de aseo — Minas Church</title>
 <style>
-  :root{--bg:#f6f7fb;--card:#fff;--ink:#1b2333;--mut:#5d6778;--acc:#1f3864;--acc2:#e8eefc;--line:#dfe4ee}
-  @media (prefers-color-scheme:dark){:root{--bg:#10141c;--card:#1a2030;--ink:#eef1f7;--mut:#9aa6bb;--acc:#8fb0ff;--acc2:#202a44;--line:#2b3550}}
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.45}
-  main{max-width:640px;margin:0 auto;padding:20px 16px 48px}
-  h1{font-size:1.6rem;margin:8px 0 4px}
-  p.sub{margin:0 0 18px;color:var(--mut)}
-  .step{font-weight:700;margin:26px 0 10px;font-size:1.05rem}
-  .teams{display:grid;gap:8px}
-  .team{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:12px 14px;font:inherit;cursor:pointer}
-  .team:hover{border-color:var(--acc)}
-  .team[aria-pressed=true]{border-color:var(--acc);background:var(--acc2)}
-  .num{flex:none;width:30px;height:30px;border-radius:50%;background:var(--acc);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:.9rem}
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:6px}
-  .cta{display:block;width:100%;background:var(--acc);color:var(--bg);border:0;border-radius:12px;padding:13px;font:inherit;font-weight:700;font-size:1rem;cursor:pointer;text-align:center;text-decoration:none}
-  .ghost{display:inline-block;background:none;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 12px;font:inherit;cursor:pointer;margin-top:10px}
-  ul.dates{list-style:none;margin:0;padding:0}
-  ul.dates li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line);font-size:.95rem}
-  ul.dates li:first-child{border-top:0}
-  .add{flex:none;background:var(--acc);color:var(--bg);border-radius:10px;padding:8px 12px;font-weight:700;text-decoration:none;font-size:.9rem;white-space:nowrap}
-  .mut{color:var(--mut);font-size:.9rem}
-  .msg{margin-top:10px;font-size:.92rem}
-  ol.steps,ol.act{margin:8px 0 0;padding-left:20px}
-  ol.steps li{margin:4px 0}
-  details{margin-top:12px}
-  summary{cursor:pointer;color:var(--acc);font-weight:600}
-  .hidden{display:none}
+:root{--bg:#f3f5fa;--card:#fff;--ink:#162033;--mut:#5b6679;--acc:#1f3864;--acc-ink:#fff;--acc2:#e7edfb;--line:#dde3ee;--shadow:0 1px 2px rgba(20,30,60,.06),0 6px 20px rgba(20,30,60,.06)}
+@media (prefers-color-scheme:dark){:root{--bg:#0e121a;--card:#171d2b;--ink:#eef1f7;--mut:#9aa6bb;--acc:#8fb0ff;--acc-ink:#0e121a;--acc2:#1f2942;--line:#2a3550;--shadow:none}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.45}
+.hero{background:linear-gradient(135deg,#1f3864,#35569c);color:#fff;padding:28px 18px 56px}
+.hero .in{max-width:680px;margin:0 auto}
+.hero h1{margin:0;font-size:1.7rem;letter-spacing:-.01em}
+.hero p{margin:6px 0 0;opacity:.9}
+main{max-width:680px;margin:-34px auto 0;padding:0 14px 48px}
+.tabs{display:flex;gap:6px;background:var(--card);border-radius:16px;padding:6px;box-shadow:var(--shadow);position:sticky;top:8px;z-index:5}
+.tab{flex:1;border:0;background:none;color:var(--mut);font:inherit;font-weight:700;padding:11px 8px;border-radius:12px;cursor:pointer}
+.tab[aria-selected=true]{background:var(--acc);color:var(--acc-ink)}
+.card{background:var(--card);border-radius:18px;padding:16px;margin-top:14px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.h{font-weight:800;font-size:1.05rem;margin:0 0 10px}
+.mut{color:var(--mut);font-size:.9rem}
+.teams{display:grid;gap:8px}
+.team{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:14px;padding:11px 13px;font:inherit;cursor:pointer}
+.team[aria-pressed=true]{border-color:var(--c,var(--acc));background:var(--acc2)}
+.num{flex:none;width:32px;height:32px;border-radius:50%;background:var(--c,var(--acc));color:#fff;display:grid;place-items:center;font-weight:800;font-size:.9rem}
+.big{display:flex;align-items:center;gap:12px;width:100%;text-decoration:none;border:0;border-radius:14px;padding:15px;margin-top:10px;font:inherit;font-weight:800;font-size:1.08rem;cursor:pointer;color:var(--acc-ink);background:var(--acc);text-align:left}
+.big small{display:block;font-weight:400;font-size:.85rem;opacity:.88}
+.big .ic{font-size:1.6rem}
+.help{background:var(--acc2);border-radius:12px;padding:12px 14px;margin-top:12px;font-size:.93rem}
+.msg{margin-top:10px;font-size:.92rem}
+details{margin-top:12px}
+summary{cursor:pointer;color:var(--acc);font-weight:700}
+ul.dates{list-style:none;margin:8px 0 0;padding:0}
+ul.dates li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:.95rem}
+ul.dates li:first-child{border-top:0}
+.add{flex:none;background:var(--acc);color:var(--acc-ink);border-radius:10px;padding:8px 12px;font-weight:700;text-decoration:none;font-size:.9rem;white-space:nowrap}
+.cta{display:block;width:100%;background:var(--acc);color:var(--acc-ink);border:0;border-radius:12px;padding:13px;font:inherit;font-weight:800;cursor:pointer}
+ol.steps,ol.act{margin:8px 0 0;padding-left:20px}
+.hidden{display:none}
+/* calendario visual */
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.chip{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 11px 5px 5px;font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px}
+.chip .dot{width:22px;height:22px;border-radius:50%;background:var(--c,var(--acc));color:#fff;display:grid;place-items:center;font-size:.75rem}
+.chip[aria-pressed=true]{border-color:var(--c,var(--acc));background:var(--acc2)}
+.chip.all{padding:5px 12px}
+.legend{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:6px;font-size:.88rem}
+.legend li{display:flex;gap:8px;align-items:center}
+.legend .dot{flex:none;width:22px;height:22px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:.75rem;font-weight:800}
+.detail{position:sticky;top:64px;z-index:4;margin-top:12px;background:var(--acc);color:var(--acc-ink);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow);font-size:.95rem}
+.months{display:grid;gap:14px;margin-top:14px}
+.month{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+.month h3{margin:0 0 8px;font-size:1.05rem}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.dow{font-size:.72rem;color:var(--mut);font-weight:700;padding-bottom:2px}
+.day{aspect-ratio:1/1;display:grid;place-items:center;font-size:.85rem;border-radius:10px;color:var(--ink);position:relative}
+.day.today{outline:2px solid var(--acc);outline-offset:-2px}
+.sat{border:0;font:inherit;font-weight:800;color:#fff;background:var(--c);cursor:pointer;line-height:1.05;flex-direction:column}
+.sat small{display:block;font-size:.6rem;font-weight:700;opacity:.92}
+.sat.dim{opacity:.22}
+.sat.sel{outline:3px solid var(--ink);outline-offset:1px}
+.names{margin:10px 0 0;padding:0;list-style:none;font-size:.84rem;color:var(--mut)}
+.names li{padding:3px 0;display:flex;gap:6px}
+.names b{color:var(--ink);min-width:2.2em}
 </style>
 </head>
 <body>
-<main>
+<header class="hero"><div class="in">
   <h1>🧹 Rol de aseo</h1>
-  <p class="sub">Sábados de aseo de nov 2026 a dic 2027. Cada quien lo agrega a su propio calendario.</p>
+  <p>Minas Church · sábados de nov 2026 a dic 2027</p>
+</div></header>
 
-  <div class="panel" style="margin-top:0">
-    <button class="cta" id="icsall">📅 Descargar todo el rol (.ics)</button>
-    <div class="msg mut" id="msgall">Archivo con los 60 sábados de todos los equipos (nov 2026 – dic 2027), para Apple Calendar, Outlook o importar a Google Calendar.</div>
+<main>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="t-add" aria-selected="true">📲 Agregar</button>
+    <button class="tab" role="tab" id="t-cal" aria-selected="false">🗓️ Calendario</button>
   </div>
 
-  <div class="step">¿Solo quieres tu equipo? Elígelo</div>
-  <div class="teams" id="teams"></div>
-
-  <div id="out" class="hidden">
-    <div class="step">Agrega tus sábados a tu Google Calendar</div>
-    <div class="panel">
-      <p class="mut" style="margin:0 0 6px">Tus fechas, o agrégalas una por una:</p>
-      <ul class="dates" id="dates"></ul>
-      <a class="cta" id="series" target="_blank" rel="noopener" style="margin-top:12px">📅 Agregar mis sábados a Google Calendar</a>
-      <div class="msg mut">Se abre Google Calendar con un evento que se repite cada 9 semanas (tu turno) hasta dic 2027. Toca <b>Guardar</b> y quedan todas tus fechas.</div>
-      <button class="ghost" id="icsteam">Descargar archivo .ics (Apple, Outlook)</button>
-      <div class="msg mut" id="msg"></div>
+  <!-- VISTA 1: agregar -->
+  <section id="v-add">
+    <div class="card">
+      <p class="h">Paso 1: Toca tu equipo</p>
+      <div class="teams" id="teams"></div>
     </div>
-  </div>
 
-  <div class="step">Para el administrador del calendario de Minas Church</div>
-  <div class="panel">
-    <p style="margin:0 0 10px">Agrega los 60 sábados de todos los equipos al calendario de Minas de una sola vez:</p>
-    <button class="cta" id="icsadmin">⬇️ Descargar rol completo (.ics)</button>
-    <div class="msg mut" id="msgadmin"></div>
-    <ol class="steps">
-      <li>Abre Google Calendar en una <b>computadora</b>, con tu cuenta de administrador.</li>
-      <li>Ve a ⚙️ Configuración → <b>Importar y exportar</b> → Importar.</li>
-      <li>Elige el archivo .ics descargado.</li>
-      <li>En “Agregar al calendario” escoge <b>MINASCHURCH</b> y toca Importar.</li>
-    </ol>
-    <p style="margin:14px 0 4px"><b>Más rápido:</b> una serie por equipo (9 toques en total). Cada enlace abre Google Calendar con el evento repetido cada 9 semanas; antes de guardar, elige el calendario <b>MINASCHURCH</b>.</p>
-    <ul class="dates" id="serieslist"></ul>
-    <details>
-      <summary>¿No puedes importar? Agregar evento por evento</summary>
-      <ul class="dates" id="alldates" style="margin-top:8px"></ul>
-      <div class="msg mut">Cada enlace abre un evento listo en tu Google Calendar; antes de guardar, elige el calendario de Minas.</div>
+    <div class="card hidden" id="out">
+      <p class="h">Paso 2: Toca el calendario que usas</p>
+      <a class="big" id="series" target="_blank" rel="noopener"><span class="ic">📅</span><span>Google Calendar<small>Si tienes Gmail o un teléfono Android</small></span></a>
+      <button class="big" id="icsapple"><span class="ic">🍎</span><span>Apple Calendar<small>iPhone, iPad o Mac · se descarga un archivo; ábrelo y toca “Agregar todo”</small></span></button>
+      <button class="big" id="icsoutlook"><span class="ic">📧</span><span>Outlook Calendar<small>Se descarga un archivo; ábrelo para agregar</small></span></button>
+      <div class="help">¿No sabes cuál usar? Casi siempre es <b>Google Calendar</b> si tienes Gmail, o <b>Apple Calendar</b> si tienes un iPhone.</div>
+      <div class="msg mut" id="msg"></div>
+      <details>
+        <summary>Ver mis fechas de aseo</summary>
+        <ul class="dates" id="dates"></ul>
+      </details>
+    </div>
+
+    <div class="card">
+      <p class="h">¿Qué hay que hacer?</p>
+      <ol class="act">
+        <li>Barrer y trapear área de reunión.</li>
+        <li>Acomodar sillas y mesas.</li>
+        <li>Limpiar baño y sacar al final bolsa de basura.</li>
+      </ol>
+      <p class="mut" style="margin:10px 0 0">Si no te fuera posible el día que corresponde, checa con el siguiente equipo para intercambiar tu día. Tu apoyo es muy importante.</p>
+    </div>
+
+    <details style="margin-top:18px">
+      <summary>Solo para el administrador del calendario de Minas Church</summary>
+      <div class="card" style="margin-top:8px">
+        <p style="margin:0 0 6px"><b>Opción rápida:</b> 9 toques (uno por equipo). Cada enlace abre Google Calendar con el evento repetido cada 9 semanas; antes de guardar, elige el calendario <b>MINASCHURCH</b>.</p>
+        <ul class="dates" id="serieslist"></ul>
+        <p style="margin:14px 0 6px"><b>Opción completa:</b> importa los 60 sábados de una vez.</p>
+        <button class="cta" id="icsadmin">⬇️ Descargar rol completo (.ics)</button>
+        <div class="msg mut" id="msgadmin"></div>
+        <ol class="steps">
+          <li>Abre Google Calendar en una <b>computadora</b>, con tu cuenta de administrador.</li>
+          <li>Ve a ⚙️ Configuración → <b>Importar y exportar</b> → Importar.</li>
+          <li>Elige el archivo .ics descargado.</li>
+          <li>En “Agregar al calendario” escoge <b>MINASCHURCH</b> y toca Importar.</li>
+        </ol>
+      </div>
     </details>
-  </div>
+  </section>
 
-  <div class="step">Actividades</div>
-  <div class="panel">
-    <ol class="act">
-      <li>Barrer y trapear área de reunión.</li>
-      <li>Acomodar sillas y mesas.</li>
-      <li>Limpiar baño y sacar al final bolsa de basura.</li>
-    </ol>
-    <p class="mut" style="margin:10px 0 0">Si no te fuera posible el día que corresponde, checa con el siguiente equipo para intercambiar tu día. Tu apoyo es muy importante.</p>
-  </div>
+  <!-- VISTA 2: calendario visual -->
+  <section id="v-cal" class="hidden">
+    <div class="card">
+      <p class="h">Filtra por equipo</p>
+      <div class="chips" id="chips"></div>
+      <ul class="legend" id="legend"></ul>
+    </div>
+    <div class="detail" id="detail">Toca un sábado de color para ver quién le toca.</div>
+    <div class="months" id="months"></div>
+  </section>
 </main>
 
 <script>
+
+
 const TEAMS = [
   "Gustavo Martínez & Karla Pérez","Gerry Villarreal & Mariana Marcos","Emilio Pérez & Alice Zavala",
   "Abner Aguilar & Carolina Zavala","Javier Díaz & Leslie Barrera","Jorge Zavala & Nora Castillo",
@@ -125,6 +174,13 @@ function gcal(it){
     details:"Ronda "+it.ronda+" — Equipo "+(it.team+1)+"\n\n"+ACT});
   return "https://calendar.google.com/calendar/render?" + q.toString();
 }
+function outlook(it){
+  const next = new Date(it.d.getTime() + 86400000);
+  const iso = d => d.toISOString().slice(0, 10);
+  const q = new URLSearchParams({path:"/calendar/action/compose", rru:"addevent", subject:"🧹 Aseo: "+TEAMS[it.team],
+    startdt: iso(it.d), enddt: iso(next), allday:"true", body:"Ronda "+it.ronda+" — Equipo "+(it.team+1)+"\n\n"+ACT});
+  return "https://outlook.live.com/calendar/0/deeplink/compose?" + q.toString();
+}
 function gcalSeries(team){
   const mine = DIAS.filter(x => x.team === team), first = mine[0];
   const next = new Date(first.d.getTime() + 86400000);
@@ -142,45 +198,129 @@ function download(filename, text, msgEl){
     msgEl.textContent = "Listo. Abre el archivo descargado y elige “Agregar todo” en tu calendario.";
   } catch(e){ msgEl.textContent = "No se pudo descargar. Usa los botones “Agregar” de Google Calendar."; }
 }
-function rowFor(it, withTeam){
-  const li = document.createElement("li");
-  const s = document.createElement("span");
-  s.textContent = "Sáb " + nice(it.d) + (withTeam ? " · " + TEAMS[it.team] : " · Ronda " + it.ronda);
-  const a = document.createElement("a");
-  a.href = gcal(it); a.target = "_blank"; a.rel = "noopener"; a.textContent = "Agregar";
-  if (withTeam) a.style.cssText = "color:var(--acc);font-weight:600;white-space:nowrap"; else a.className = "add";
-  li.append(s, a); return li;
+
+
+const COLORS = TEAMS.map((_, i) => "hsl(" + (i * 40) + " 62% 40%)");
+let sel = null;     // equipo elegido (vista agregar y filtro)
+let selDay = null;  // sábado tocado en el calendario
+
+/* ---------- pestañas ---------- */
+function showTab(which){
+  $("v-add").classList.toggle("hidden", which !== "add");
+  $("v-cal").classList.toggle("hidden", which !== "cal");
+  $("t-add").setAttribute("aria-selected", String(which === "add"));
+  $("t-cal").setAttribute("aria-selected", String(which === "cal"));
+  window.scrollTo({top:0});
 }
-let sel = null;
+$("t-add").onclick = () => showTab("add");
+$("t-cal").onclick = () => showTab("cal");
+
+/* ---------- vista 1: agregar ---------- */
 const wrap = $("teams");
 TEAMS.forEach((t, i) => {
   const b = document.createElement("button");
-  b.className = "team"; b.setAttribute("aria-pressed", "false");
+  b.className = "team"; b.setAttribute("aria-pressed", "false"); b.style.setProperty("--c", COLORS[i]);
   b.innerHTML = '<span class="num">' + (i + 1) + '</span><span></span>';
-  b.lastChild.textContent = t; b.onclick = () => pick(i); wrap.appendChild(b);
+  b.lastChild.textContent = t; b.onclick = () => pickTeam(i); wrap.appendChild(b);
 });
-function pick(i){
+function pickTeam(i){
   sel = i;
   [...wrap.children].forEach((c, k) => c.setAttribute("aria-pressed", String(k === i)));
   $("out").classList.remove("hidden");
   $("dates").innerHTML = "";
-  DIAS.filter(x => x.team === i).forEach(it => $("dates").appendChild(rowFor(it, false)));
-  $("msg").textContent = "";
-  const n = DIAS.filter(x => x.team === i).length;
+  DIAS.filter(x => x.team === i).forEach(it => {
+    const li = document.createElement("li"); const s = document.createElement("span");
+    s.textContent = "Sábado " + nice(it.d); li.append(s); $("dates").appendChild(li);
+  });
   $("series").href = gcalSeries(i);
-  $("series").textContent = "📅 Agregar mis " + n + " sábados a Google Calendar";
+  $("msg").textContent = "";
+  paintFilter();
   $("out").scrollIntoView({behavior:"smooth", block:"start"});
 }
-DIAS.forEach(it => $("alldates").appendChild(rowFor(it, true)));
 TEAMS.forEach((t, i) => {
   const li = document.createElement("li");
   const sp = document.createElement("span"); sp.textContent = (i + 1) + ". " + t;
   const a = document.createElement("a"); a.className = "add"; a.href = gcalSeries(i); a.target = "_blank"; a.rel = "noopener"; a.textContent = "Agregar serie";
   li.append(sp, a); $("serieslist").appendChild(li);
 });
-$("icsall").onclick = () => download("Calendario-de-limpieza.ics", buildICS(DIAS, "Calendario de limpieza"), $("msgall"));
+const teamICS = () => { if (sel !== null) download("Aseo-equipo-"+(sel+1)+".ics", buildICS(DIAS.filter(x => x.team === sel), "Aseo — Equipo "+(sel+1)), $("msg")); };
+$("icsapple").onclick = teamICS;
+$("icsoutlook").onclick = teamICS;
 $("icsadmin").onclick = () => download("Rol-de-aseo-completo.ics", buildICS(DIAS, "Rol de aseo"), $("msgadmin"));
-$("icsteam").onclick = () => { if (sel !== null) download("Aseo-equipo-"+(sel+1)+".ics", buildICS(DIAS.filter(x => x.team === sel), "Aseo — Equipo "+(sel+1)), $("msg")); };
+
+/* ---------- vista 2: calendario visual ---------- */
+const byDate = {};
+DIAS.forEach(it => { byDate[ymd(it.d)] = it; });
+const now = new Date();
+const todayKey = now.getFullYear() + String(now.getMonth()+1).padStart(2,"0") + String(now.getDate()).padStart(2,"0");
+
+const chips = $("chips");
+function chip(label, i){
+  const b = document.createElement("button");
+  b.className = "chip" + (i === null ? " all" : ""); b.setAttribute("aria-pressed", "false");
+  if (i !== null){ b.style.setProperty("--c", COLORS[i]); b.innerHTML = '<span class="dot">' + (i+1) + '</span><span>Equipo ' + (i+1) + '</span>'; }
+  else b.textContent = "Todos";
+  b.onclick = () => { sel = i; paintFilter(); if (i !== null) syncAddView(i); };
+  chips.appendChild(b); return b;
+}
+chip("Todos", null); TEAMS.forEach((t, i) => chip(t, i));
+function syncAddView(i){ [...wrap.children].forEach((c, k) => c.setAttribute("aria-pressed", String(k === i))); }
+
+TEAMS.forEach((t, i) => {
+  const li = document.createElement("li");
+  li.innerHTML = '<span class="dot" style="background:' + COLORS[i] + '">' + (i+1) + '</span><span></span>';
+  li.lastChild.textContent = t; $("legend").appendChild(li);
+});
+
+const months = $("months");
+const dows = ["D","L","M","M","J","V","S"];
+function monthNames(y, m){ return MESES[m][0].toUpperCase() + MESES[m].slice(1) + " " + y; }
+for (let k = 0; k < 14; k++){
+  const y = 2026 + Math.floor((10 + k) / 12), m = (10 + k) % 12;
+  const card = document.createElement("div"); card.className = "month";
+  const h = document.createElement("h3"); h.textContent = monthNames(y, m); card.appendChild(h);
+  const g = document.createElement("div"); g.className = "grid";
+  dows.forEach(d => { const e = document.createElement("div"); e.className = "dow"; e.textContent = d; g.appendChild(e); });
+  const first = new Date(Date.UTC(y, m, 1)).getUTCDay();
+  const dim = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+  for (let b = 0; b < first; b++) g.appendChild(document.createElement("div"));
+  for (let d = 1; d <= dim; d++){
+    const key = y + String(m+1).padStart(2,"0") + String(d).padStart(2,"0");
+    const it = byDate[key];
+    if (it){
+      const e = document.createElement("button"); e.className = "day sat"; e.style.setProperty("--c", COLORS[it.team]);
+      e.dataset.team = it.team; e.dataset.key = key;
+      e.innerHTML = d + '<small>E' + (it.team+1) + '</small>';
+      e.onclick = () => showDetail(it, key);
+      if (key === todayKey) e.classList.add("today");
+      g.appendChild(e);
+    } else {
+      const e = document.createElement("div"); e.className = "day" + (key === todayKey ? " today" : ""); e.textContent = d; g.appendChild(e);
+    }
+  }
+  card.appendChild(g);
+  const ul = document.createElement("ul"); ul.className = "names";
+  DIAS.filter(x => x.d.getUTCFullYear() === y && x.d.getUTCMonth() === m).forEach(it => {
+    const li = document.createElement("li");
+    li.innerHTML = '<b>' + it.d.getUTCDate() + '</b><span></span>';
+    li.lastChild.textContent = TEAMS[it.team]; ul.appendChild(li);
+  });
+  card.appendChild(ul);
+  months.appendChild(card);
+}
+function showDetail(it, key){
+  selDay = key;
+  $("detail").textContent = "Sábado " + nice(it.d) + " · Ronda " + it.ronda + " · Equipo " + (it.team + 1) + ": " + TEAMS[it.team];
+  paintFilter();
+}
+function paintFilter(){
+  [...chips.children].forEach((c, k) => c.setAttribute("aria-pressed", String((k === 0 && sel === null) || (k > 0 && sel === k - 1))));
+  document.querySelectorAll(".sat").forEach(e => {
+    e.classList.toggle("dim", sel !== null && Number(e.dataset.team) !== sel);
+    e.classList.toggle("sel", e.dataset.key === selDay);
+  });
+}
+paintFilter();
 </script>
 </body>
 </html>
