@@ -63,6 +63,19 @@ ol.steps,ol.act{margin:8px 0 0;padding-left:20px}
 .names{margin:10px 0 0;padding:0;list-style:none;font-size:.84rem;color:var(--mut)}
 .names li{padding:3px 0;display:flex;gap:6px}
 .names b{color:var(--ink);min-width:2.2em}
+
+.field{display:block;width:100%;font:inherit;font-weight:700;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:14px;padding:13px 40px 13px 14px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' fill='none' stroke='%238a95ab' stroke-width='2' stroke-linecap='round'/></svg>");background-repeat:no-repeat;background-position:right 14px center}
+.field:focus{outline:none;border-color:var(--acc)}
+.lbl{display:block;font-weight:800;font-size:.8rem;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;margin:0 0 6px}
+.row2{display:grid;grid-template-columns:1fr;gap:10px}
+.nav{display:flex;gap:8px;align-items:stretch}
+.nav .field{flex:1}
+.arrow{flex:none;width:52px;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;font:inherit;font-size:1.3rem;font-weight:800;cursor:pointer}
+.arrow:disabled{opacity:.35;cursor:default}
+.turns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.turn{border:2px solid var(--c,var(--acc));background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;font:inherit;font-size:.85rem;font-weight:700;cursor:pointer}
+.turn[aria-pressed=true]{background:var(--c,var(--acc));color:#fff}
+.who{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--acc2);font-size:.92rem}
 </style>
 </head>
 <body>
@@ -73,19 +86,43 @@ ol.steps,ol.act{margin:8px 0 0;padding-left:20px}
 
 <main>
   <div class="tabs" role="tablist">
-    <button class="tab" role="tab" id="t-add" aria-selected="true">📲 Agregar</button>
-    <button class="tab" role="tab" id="t-cal" aria-selected="false">🗓️ Calendario</button>
+    <button class="tab" role="tab" id="t-cal" aria-selected="true">🗓️ Calendario</button>
+    <button class="tab" role="tab" id="t-add" aria-selected="false">📲 Agregar</button>
+    <button class="tab" role="tab" id="t-info" aria-selected="false">ℹ️ Info</button>
   </div>
 
-  <!-- VISTA 1: agregar -->
-  <section id="v-add">
+  <!-- SECCIÓN: CALENDARIO -->
+  <section id="v-cal">
     <div class="card">
-      <p class="h">Paso 1: Toca tu equipo</p>
-      <div class="teams" id="teams"></div>
+      <div class="row2">
+        <div>
+          <label class="lbl" for="selMonth">Mes</label>
+          <div class="nav">
+            <button class="arrow" id="prev" aria-label="Mes anterior">‹</button>
+            <select class="field" id="selMonth"></select>
+            <button class="arrow" id="next" aria-label="Mes siguiente">›</button>
+          </div>
+        </div>
+        <div>
+          <label class="lbl" for="selTeamCal">Equipo</label>
+          <select class="field" id="selTeamCal"></select>
+        </div>
+      </div>
+      <div class="who hidden" id="who"></div>
+      <div class="turns" id="turns"></div>
     </div>
+    <div class="detail" id="detail">Toca un sábado de color para ver quién le toca.</div>
+    <div class="months" id="months"></div>
+  </section>
 
+  <!-- SECCIÓN: AGREGAR -->
+  <section id="v-add" class="hidden">
+    <div class="card">
+      <label class="lbl" for="selTeamAdd">Paso 1 · Elige tu equipo</label>
+      <select class="field" id="selTeamAdd"></select>
+    </div>
     <div class="card hidden" id="out">
-      <p class="h">Paso 2: Toca el calendario que usas</p>
+      <p class="h">Paso 2 · Toca el calendario que usas</p>
       <a class="big" id="series" target="_blank" rel="noopener"><span class="ic">📅</span><span>Google Calendar<small>Si tienes Gmail o un teléfono Android</small></span></a>
       <button class="big" id="icsapple"><span class="ic">🍎</span><span>Apple Calendar<small>iPhone, iPad o Mac · se descarga un archivo; ábrelo y toca “Agregar todo”</small></span></button>
       <button class="big" id="icsoutlook"><span class="ic">📧</span><span>Outlook Calendar<small>Se descarga un archivo; ábrelo para agregar</small></span></button>
@@ -96,7 +133,10 @@ ol.steps,ol.act{margin:8px 0 0;padding-left:20px}
         <ul class="dates" id="dates"></ul>
       </details>
     </div>
+  </section>
 
+  <!-- SECCIÓN: INFO -->
+  <section id="v-info" class="hidden">
     <div class="card">
       <p class="h">¿Qué hay que hacer?</p>
       <ol class="act">
@@ -106,7 +146,10 @@ ol.steps,ol.act{margin:8px 0 0;padding-left:20px}
       </ol>
       <p class="mut" style="margin:10px 0 0">Si no te fuera posible el día que corresponde, checa con el siguiente equipo para intercambiar tu día. Tu apoyo es muy importante.</p>
     </div>
-
+    <div class="card">
+      <p class="h">Equipos</p>
+      <ul class="legend" id="legend"></ul>
+    </div>
     <details style="margin-top:18px">
       <summary>Solo para el administrador del calendario de Minas Church</summary>
       <div class="card" style="margin-top:8px">
@@ -124,20 +167,10 @@ ol.steps,ol.act{margin:8px 0 0;padding-left:20px}
       </div>
     </details>
   </section>
-
-  <!-- VISTA 2: calendario visual -->
-  <section id="v-cal" class="hidden">
-    <div class="card">
-      <p class="h">Filtra por equipo</p>
-      <div class="chips" id="chips"></div>
-      <ul class="legend" id="legend"></ul>
-    </div>
-    <div class="detail" id="detail">Toca un sábado de color para ver quién le toca.</div>
-    <div class="months" id="months"></div>
-  </section>
 </main>
 
 <script>
+
 
 
 const TEAMS = [
@@ -200,85 +233,70 @@ function download(filename, text, msgEl){
 }
 
 
-const COLORS = TEAMS.map((_, i) => "hsl(" + (i * 40) + " 62% 40%)");
-let sel = null;     // equipo elegido (vista agregar y filtro)
-let selDay = null;  // sábado tocado en el calendario
 
-/* ---------- pestañas ---------- */
-function showTab(which){
-  $("v-add").classList.toggle("hidden", which !== "add");
-  $("v-cal").classList.toggle("hidden", which !== "cal");
-  $("t-add").setAttribute("aria-selected", String(which === "add"));
-  $("t-cal").setAttribute("aria-selected", String(which === "cal"));
+const COLORS = TEAMS.map((_, i) => "hsl(" + (i * 40) + " 62% 40%)");
+let team = null;      // equipo elegido (compartido entre secciones)
+let monthIdx = 0;     // 0..13
+let selDay = null;
+
+/* ---------- secciones ---------- */
+const VIEWS = {cal:"v-cal", add:"v-add", info:"v-info"};
+function showTab(w){
+  for (const k in VIEWS){
+    $(VIEWS[k]).classList.toggle("hidden", k !== w);
+    $("t-" + k).setAttribute("aria-selected", String(k === w));
+  }
   window.scrollTo({top:0});
 }
-$("t-add").onclick = () => showTab("add");
 $("t-cal").onclick = () => showTab("cal");
+$("t-add").onclick = () => showTab("add");
+$("t-info").onclick = () => showTab("info");
 
-/* ---------- vista 1: agregar ---------- */
-const wrap = $("teams");
-TEAMS.forEach((t, i) => {
-  const b = document.createElement("button");
-  b.className = "team"; b.setAttribute("aria-pressed", "false"); b.style.setProperty("--c", COLORS[i]);
-  b.innerHTML = '<span class="num">' + (i + 1) + '</span><span></span>';
-  b.lastChild.textContent = t; b.onclick = () => pickTeam(i); wrap.appendChild(b);
-});
-function pickTeam(i){
-  sel = i;
-  [...wrap.children].forEach((c, k) => c.setAttribute("aria-pressed", String(k === i)));
-  $("out").classList.remove("hidden");
-  $("dates").innerHTML = "";
-  DIAS.filter(x => x.team === i).forEach(it => {
-    const li = document.createElement("li"); const s = document.createElement("span");
-    s.textContent = "Sábado " + nice(it.d); li.append(s); $("dates").appendChild(li);
-  });
-  $("series").href = gcalSeries(i);
-  $("msg").textContent = "";
-  paintFilter();
-  $("out").scrollIntoView({behavior:"smooth", block:"start"});
+/* ---------- selectores ---------- */
+function fillTeamSelect(sel, firstLabel){
+  const o0 = document.createElement("option"); o0.value = ""; o0.textContent = firstLabel; sel.appendChild(o0);
+  TEAMS.forEach((t, i) => { const o = document.createElement("option"); o.value = String(i); o.textContent = (i+1) + ". " + t; sel.appendChild(o); });
 }
-TEAMS.forEach((t, i) => {
-  const li = document.createElement("li");
-  const sp = document.createElement("span"); sp.textContent = (i + 1) + ". " + t;
-  const a = document.createElement("a"); a.className = "add"; a.href = gcalSeries(i); a.target = "_blank"; a.rel = "noopener"; a.textContent = "Agregar serie";
-  li.append(sp, a); $("serieslist").appendChild(li);
-});
-const teamICS = () => { if (sel !== null) download("Aseo-equipo-"+(sel+1)+".ics", buildICS(DIAS.filter(x => x.team === sel), "Aseo — Equipo "+(sel+1)), $("msg")); };
-$("icsapple").onclick = teamICS;
-$("icsoutlook").onclick = teamICS;
-$("icsadmin").onclick = () => download("Rol-de-aseo-completo.ics", buildICS(DIAS, "Rol de aseo"), $("msgadmin"));
+fillTeamSelect($("selTeamCal"), "Todos los equipos");
+fillTeamSelect($("selTeamAdd"), "— Toca para elegir —");
 
-/* ---------- vista 2: calendario visual ---------- */
+const MONTHS = [];
+for (let k = 0; k < 14; k++){
+  const y = 2026 + Math.floor((10 + k) / 12), m = (10 + k) % 12;
+  MONTHS.push({y, m});
+  const o = document.createElement("option"); o.value = String(k);
+  o.textContent = MESES[m][0].toUpperCase() + MESES[m].slice(1) + " " + y; $("selMonth").appendChild(o);
+}
+
+function setTeam(t){
+  team = t;
+  $("selTeamCal").value = t === null ? "" : String(t);
+  $("selTeamAdd").value = t === null ? "" : String(t);
+  renderAdd(); renderCal();
+}
+function setMonth(k){
+  monthIdx = Math.max(0, Math.min(13, k));
+  $("selMonth").value = String(monthIdx);
+  renderCal();
+}
+$("selTeamCal").onchange = e => setTeam(e.target.value === "" ? null : Number(e.target.value));
+$("selTeamAdd").onchange = e => setTeam(e.target.value === "" ? null : Number(e.target.value));
+$("selMonth").onchange = e => setMonth(Number(e.target.value));
+$("prev").onclick = () => setMonth(monthIdx - 1);
+$("next").onclick = () => setMonth(monthIdx + 1);
+
+/* ---------- calendario ---------- */
 const byDate = {};
 DIAS.forEach(it => { byDate[ymd(it.d)] = it; });
 const now = new Date();
 const todayKey = now.getFullYear() + String(now.getMonth()+1).padStart(2,"0") + String(now.getDate()).padStart(2,"0");
-
-const chips = $("chips");
-function chip(label, i){
-  const b = document.createElement("button");
-  b.className = "chip" + (i === null ? " all" : ""); b.setAttribute("aria-pressed", "false");
-  if (i !== null){ b.style.setProperty("--c", COLORS[i]); b.innerHTML = '<span class="dot">' + (i+1) + '</span><span>Equipo ' + (i+1) + '</span>'; }
-  else b.textContent = "Todos";
-  b.onclick = () => { sel = i; paintFilter(); if (i !== null) syncAddView(i); };
-  chips.appendChild(b); return b;
-}
-chip("Todos", null); TEAMS.forEach((t, i) => chip(t, i));
-function syncAddView(i){ [...wrap.children].forEach((c, k) => c.setAttribute("aria-pressed", String(k === i))); }
-
-TEAMS.forEach((t, i) => {
-  const li = document.createElement("li");
-  li.innerHTML = '<span class="dot" style="background:' + COLORS[i] + '">' + (i+1) + '</span><span></span>';
-  li.lastChild.textContent = t; $("legend").appendChild(li);
-});
-
-const months = $("months");
 const dows = ["D","L","M","M","J","V","S"];
-function monthNames(y, m){ return MESES[m][0].toUpperCase() + MESES[m].slice(1) + " " + y; }
-for (let k = 0; k < 14; k++){
-  const y = 2026 + Math.floor((10 + k) / 12), m = (10 + k) % 12;
+
+function renderCal(){
+  $("prev").disabled = monthIdx === 0; $("next").disabled = monthIdx === 13;
+  const {y, m} = MONTHS[monthIdx];
   const card = document.createElement("div"); card.className = "month";
-  const h = document.createElement("h3"); h.textContent = monthNames(y, m); card.appendChild(h);
+  const h = document.createElement("h3"); h.textContent = MESES[m][0].toUpperCase() + MESES[m].slice(1) + " " + y; card.appendChild(h);
   const g = document.createElement("div"); g.className = "grid";
   dows.forEach(d => { const e = document.createElement("div"); e.className = "dow"; e.textContent = d; g.appendChild(e); });
   const first = new Date(Date.UTC(y, m, 1)).getUTCDay();
@@ -289,10 +307,11 @@ for (let k = 0; k < 14; k++){
     const it = byDate[key];
     if (it){
       const e = document.createElement("button"); e.className = "day sat"; e.style.setProperty("--c", COLORS[it.team]);
-      e.dataset.team = it.team; e.dataset.key = key;
       e.innerHTML = d + '<small>E' + (it.team+1) + '</small>';
-      e.onclick = () => showDetail(it, key);
+      if (team !== null && it.team !== team) e.classList.add("dim");
+      if (key === selDay) e.classList.add("sel");
       if (key === todayKey) e.classList.add("today");
+      e.onclick = () => { selDay = key; showDetail(it); renderCal(); };
       g.appendChild(e);
     } else {
       const e = document.createElement("div"); e.className = "day" + (key === todayKey ? " today" : ""); e.textContent = d; g.appendChild(e);
@@ -300,27 +319,69 @@ for (let k = 0; k < 14; k++){
   }
   card.appendChild(g);
   const ul = document.createElement("ul"); ul.className = "names";
-  DIAS.filter(x => x.d.getUTCFullYear() === y && x.d.getUTCMonth() === m).forEach(it => {
+  const inMonth = DIAS.filter(x => x.d.getUTCFullYear() === y && x.d.getUTCMonth() === m && (team === null || x.team === team));
+  inMonth.forEach(it => {
     const li = document.createElement("li");
     li.innerHTML = '<b>' + it.d.getUTCDate() + '</b><span></span>';
     li.lastChild.textContent = TEAMS[it.team]; ul.appendChild(li);
   });
+  if (!inMonth.length){ const li = document.createElement("li"); li.textContent = "Este equipo no tiene sábado de aseo este mes."; ul.appendChild(li); }
   card.appendChild(ul);
-  months.appendChild(card);
+  $("months").replaceChildren(card);
+
+  // chips con todos los turnos del equipo elegido
+  const turns = $("turns"); turns.replaceChildren();
+  const who = $("who");
+  if (team === null){ who.classList.add("hidden"); }
+  else {
+    who.classList.remove("hidden"); who.textContent = "Equipo " + (team+1) + ": " + TEAMS[team] + ". Toca una fecha para ir a ese mes:";
+    DIAS.filter(x => x.team === team).forEach(it => {
+      const k = (it.d.getUTCFullYear() - 2026) * 12 + it.d.getUTCMonth() - 10;
+      const b = document.createElement("button"); b.className = "turn"; b.style.setProperty("--c", COLORS[team]);
+      b.setAttribute("aria-pressed", String(k === monthIdx));
+      b.textContent = it.d.getUTCDate() + " " + MESES[it.d.getUTCMonth()].slice(0,3) + " " + String(it.d.getUTCFullYear()).slice(2);
+      b.onclick = () => { selDay = ymd(it.d); showDetail(it); setMonth(k); };
+      turns.appendChild(b);
+    });
+  }
 }
-function showDetail(it, key){
-  selDay = key;
+function showDetail(it){
   $("detail").textContent = "Sábado " + nice(it.d) + " · Ronda " + it.ronda + " · Equipo " + (it.team + 1) + ": " + TEAMS[it.team];
-  paintFilter();
 }
-function paintFilter(){
-  [...chips.children].forEach((c, k) => c.setAttribute("aria-pressed", String((k === 0 && sel === null) || (k > 0 && sel === k - 1))));
-  document.querySelectorAll(".sat").forEach(e => {
-    e.classList.toggle("dim", sel !== null && Number(e.dataset.team) !== sel);
-    e.classList.toggle("sel", e.dataset.key === selDay);
+
+/* ---------- agregar ---------- */
+function renderAdd(){
+  if (team === null){ $("out").classList.add("hidden"); return; }
+  $("out").classList.remove("hidden");
+  $("dates").replaceChildren();
+  DIAS.filter(x => x.team === team).forEach(it => {
+    const li = document.createElement("li"); const s = document.createElement("span");
+    s.textContent = "Sábado " + nice(it.d); li.append(s); $("dates").appendChild(li);
   });
+  $("series").href = gcalSeries(team);
+  $("msg").textContent = "";
 }
-paintFilter();
+const teamICS = () => { if (team !== null) download("Aseo-equipo-"+(team+1)+".ics", buildICS(DIAS.filter(x => x.team === team), "Aseo — Equipo "+(team+1)), $("msg")); };
+$("icsapple").onclick = teamICS;
+$("icsoutlook").onclick = teamICS;
+
+/* ---------- info / admin ---------- */
+TEAMS.forEach((t, i) => {
+  const li = document.createElement("li");
+  li.innerHTML = '<span class="dot" style="background:' + COLORS[i] + '">' + (i+1) + '</span><span></span>';
+  li.lastChild.textContent = t; $("legend").appendChild(li);
+  const l2 = document.createElement("li");
+  const sp = document.createElement("span"); sp.textContent = (i + 1) + ". " + t;
+  const a = document.createElement("a"); a.className = "add"; a.href = gcalSeries(i); a.target = "_blank"; a.rel = "noopener"; a.textContent = "Agregar serie";
+  l2.append(sp, a); $("serieslist").appendChild(l2);
+});
+$("icsadmin").onclick = () => download("Rol-de-aseo-completo.ics", buildICS(DIAS, "Rol de aseo"), $("msgadmin"));
+
+/* ---------- inicio: mes actual ---------- */
+(function init(){
+  const k = (now.getFullYear() - 2026) * 12 + now.getMonth() - 10;
+  setMonth(k >= 0 && k <= 13 ? k : 0);
+})();
 </script>
 </body>
 </html>
