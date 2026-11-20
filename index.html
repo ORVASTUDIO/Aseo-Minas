@@ -40,8 +40,8 @@
   <p class="sub">Sábados de aseo de nov 2026 a dic 2027. Cada quien lo agrega a su propio calendario.</p>
 
   <div class="panel" style="margin-top:0">
-    <button class="cta" id="icsall">📅 Agregar TODO el rol a mi calendario</button>
-    <div class="msg mut" id="msgall">Un toque: se descarga el archivo con los 60 sábados (nov 2026 – dic 2027). Ábrelo y elige “Agregar todo” (iPhone, Android, Mac, Outlook o Google Calendar).</div>
+    <button class="cta" id="icsall">📅 Descargar todo el rol (.ics)</button>
+    <div class="msg mut" id="msgall">Archivo con los 60 sábados de todos los equipos (nov 2026 – dic 2027), para Apple Calendar, Outlook o importar a Google Calendar.</div>
   </div>
 
   <div class="step">¿Solo quieres tu equipo? Elígelo</div>
@@ -50,9 +50,11 @@
   <div id="out" class="hidden">
     <div class="step">Agrega tus sábados a tu Google Calendar</div>
     <div class="panel">
-      <p class="mut" style="margin:0 0 6px">Si prefieres Google Calendar: toca “Agregar” en cada fecha y solo guarda el evento.</p>
+      <p class="mut" style="margin:0 0 6px">Tus fechas, o agrégalas una por una:</p>
       <ul class="dates" id="dates"></ul>
-      <button class="cta" id="icsteam" style="margin-top:12px">📅 Agregar mis sábados de un toque</button>
+      <a class="cta" id="series" target="_blank" rel="noopener" style="margin-top:12px">📅 Agregar mis sábados a Google Calendar</a>
+      <div class="msg mut">Se abre Google Calendar con un evento que se repite cada 9 semanas (tu turno) hasta dic 2027. Toca <b>Guardar</b> y quedan todas tus fechas.</div>
+      <button class="ghost" id="icsteam">Descargar archivo .ics (Apple, Outlook)</button>
       <div class="msg mut" id="msg"></div>
     </div>
   </div>
@@ -68,6 +70,8 @@
       <li>Elige el archivo .ics descargado.</li>
       <li>En “Agregar al calendario” escoge <b>MINASCHURCH</b> y toca Importar.</li>
     </ol>
+    <p style="margin:14px 0 4px"><b>Más rápido:</b> una serie por equipo (9 toques en total). Cada enlace abre Google Calendar con el evento repetido cada 9 semanas; antes de guardar, elige el calendario <b>MINASCHURCH</b>.</p>
+    <ul class="dates" id="serieslist"></ul>
     <details>
       <summary>¿No puedes importar? Agregar evento por evento</summary>
       <ul class="dates" id="alldates" style="margin-top:8px"></ul>
@@ -121,6 +125,13 @@ function gcal(it){
     details:"Ronda "+it.ronda+" — Equipo "+(it.team+1)+"\n\n"+ACT});
   return "https://calendar.google.com/calendar/render?" + q.toString();
 }
+function gcalSeries(team){
+  const mine = DIAS.filter(x => x.team === team), first = mine[0];
+  const next = new Date(first.d.getTime() + 86400000);
+  const q = new URLSearchParams({action:"TEMPLATE", text:"🧹 Aseo: "+TEAMS[team], dates: ymd(first.d)+"/"+ymd(next),
+    details:"Turno de aseo, cada 9 semanas.\n\n"+ACT, recur:"RRULE:FREQ=WEEKLY;INTERVAL=9;COUNT="+mine.length});
+  return "https://calendar.google.com/calendar/render?" + q.toString();
+}
 function download(filename, text, msgEl){
   try {
     const blob = new Blob([text], {type:"text/calendar;charset=utf-8"});
@@ -155,10 +166,18 @@ function pick(i){
   $("dates").innerHTML = "";
   DIAS.filter(x => x.team === i).forEach(it => $("dates").appendChild(rowFor(it, false)));
   $("msg").textContent = "";
-  $("icsteam").textContent = "📅 Agregar mis " + DIAS.filter(x => x.team === i).length + " sábados de un toque";
+  const n = DIAS.filter(x => x.team === i).length;
+  $("series").href = gcalSeries(i);
+  $("series").textContent = "📅 Agregar mis " + n + " sábados a Google Calendar";
   $("out").scrollIntoView({behavior:"smooth", block:"start"});
 }
 DIAS.forEach(it => $("alldates").appendChild(rowFor(it, true)));
+TEAMS.forEach((t, i) => {
+  const li = document.createElement("li");
+  const sp = document.createElement("span"); sp.textContent = (i + 1) + ". " + t;
+  const a = document.createElement("a"); a.className = "add"; a.href = gcalSeries(i); a.target = "_blank"; a.rel = "noopener"; a.textContent = "Agregar serie";
+  li.append(sp, a); $("serieslist").appendChild(li);
+});
 $("icsall").onclick = () => download("Calendario-de-limpieza.ics", buildICS(DIAS, "Calendario de limpieza"), $("msgall"));
 $("icsadmin").onclick = () => download("Rol-de-aseo-completo.ics", buildICS(DIAS, "Rol de aseo"), $("msgadmin"));
 $("icsteam").onclick = () => { if (sel !== null) download("Aseo-equipo-"+(sel+1)+".ics", buildICS(DIAS.filter(x => x.team === sel), "Aseo — Equipo "+(sel+1)), $("msg")); };
