@@ -288,8 +288,10 @@ $("next").onclick = () => setMonth(monthIdx + 1);
 /* ---------- calendario ---------- */
 const byDate = {};
 DIAS.forEach(it => { byDate[ymd(it.d)] = it; });
-const now = new Date();
-const todayKey = now.getFullYear() + String(now.getMonth()+1).padStart(2,"0") + String(now.getDate()).padStart(2,"0");
+// Fecha de hoy según la hora de Monterrey (sin importar dónde esté el teléfono)
+const mty = new Intl.DateTimeFormat("en-CA", {timeZone:"America/Monterrey", year:"numeric", month:"2-digit", day:"2-digit"}).format(new Date());
+const todayKey = mty.replace(/-/g, "");
+const now = {y: Number(mty.slice(0,4)), m: Number(mty.slice(5,7)) - 1};
 const dows = ["D","L","M","M","J","V","S"];
 
 function renderCal(){
@@ -379,7 +381,7 @@ $("icsadmin").onclick = () => download("Rol-de-aseo-completo.ics", buildICS(DIAS
 
 /* ---------- inicio: mes actual ---------- */
 (function init(){
-  const k = (now.getFullYear() - 2026) * 12 + now.getMonth() - 10;
+  const k = (now.y - 2026) * 12 + now.m - 10;
   setMonth(k >= 0 && k <= 13 ? k : 0);
 })();
 </script>
